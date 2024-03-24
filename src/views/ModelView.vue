@@ -1,31 +1,23 @@
 <template>
     <div class="mx-auto pt-[50px]">
         <div class="max-w-[1200px] flex mx-auto"><button class="h-[40px] borderall w-[120px] mb-[20px]"
-                @click="this.$router.push('/')"> НАЗАД</button> <h1 class="ls">ARKR 18391 fihiefe 282d/ 33</h1></div>
+                @click="this.$router.push('/')"> НАЗАД</button>
+            <h1 class="ls">{{ item.title }}</h1>
+        </div>
         <div class="mx-auto flex flex-col items-center min-h-[100vh] flex">
             <div class="h-[500px] sticky top-0 z-40  bg-[#333] ter w-[100%] items-center justify-center">
                 <!-- <ModelViewer src="../../public/export.glb" class="h-[100%] w-[100%]" auto-rotate camera-controls>
                 </ModelViewer> -->
-                <model-viewer id="transform" orientation="20deg 0 0" src="../../akms_polish_circle_11_from_radom.glb" ar
-                    class="h-[100%] w-[100%]" exposure="1" ar-modes="webxr scene-viewer quick-look" camera-controls
-                    tone-mapping="commerce" shadow-intensity="1" camera-orbit="-137.5deg 94.59deg 1.631m"
-                    field-of-view="22.98deg">
-                    <button class="Hotspot" slot="hotspot-1"
-                        data-position="-0.010827445092932576m -0.08774892664746206m -0.24417347387766528m"
-                        data-normal="-0.999999999999603m 7.891073660985632e-7m -4.1421079806914297e-7m"
+                <model-viewer id="transform" orientation="20deg 0 0" :src="item.url" ar class="h-[100%] w-[100%]"
+                    exposure="1" ar-modes="webxr scene-viewer quick-look" camera-controls tone-mapping="commerce"
+                    shadow-intensity="1" camera-orbit="-137.5deg 94.59deg 1.631m" field-of-view="22.98deg">
+                    <button v-for="(i,index) of item.hotspots" :key="item.id" class="Hotspot" :slot="`hotspot-${index+1}`"
+                        :data-position="i.position"
+                        :data-normal="i.normal"
                         data-visibility-attribute="visible">
-                        <div class="HotspotAnnotation">Магазин</div>
-                    </button><button class="Hotspot" slot="hotspot-2"
-                        data-position="-0.00840842181350288m 0.08172440198518133m -0.5974367635652008m"
-                        data-normal="-0.9857473658942755m 0.16823237094119758m -2.7408532094728688e-8m"
-                        data-visibility-attribute="visible">
-                        <div class="HotspotAnnotation">Ствол</div>
-                    </button><button class="Hotspot" slot="hotspot-3"
-                        data-position="0.0015826896468656409m 0.028337243192085346m -0.06106689348373606m"
-                        data-normal="-0.0000024930049048323137m 0.3741283836523488m -0.9273769204263529m"
-                        data-visibility-attribute="visible">
-                        <div class="HotspotAnnotation">курок</div>
+                        <div class="HotspotAnnotation">{{ i.annotation  }}</div>
                     </button>
+                    
                     <div class="progress-bar hide" slot="progress-bar">
                         <div class="update-bar"></div>
                     </div>
@@ -42,16 +34,15 @@
             <div class="h-[100%] w-[50%] p-[20px] borderall mt-[20px]">
                 <label class="cursor-pointer label gap-[20px] flex items-start justify-start">
                     <h2 class="text-[30px] text-white mb-[30px]">Exposures:</h2>
-                    <input @input="exp()" type="range" value="1" max="2"    
-                                class="range-secondary boxhrang range ">
+                    <input @input="exp()" type="range" value="1" max="2" class="range-secondary boxhrang range ">
                 </label>
                 <label class="cursor-pointer label gap-[20px] flex items-start justify-start">
                     <h2 class="text-[30px] text-white mb-[30px]">Hotpoints:</h2>
-                    <input @click="hot()" type="checkbox"  class="checkbox mt-[10px] checkbox-secondary" />
+                    <input @click="hot()" type="checkbox" class="checkbox mt-[10px] checkbox-secondary" />
                 </label>
                 <label class="cursor-pointer label gap-[20px] flex items-start justify-start">
                     <h2 class="text-[30px] text-white mb-[30px]">background:</h2>
-                    <input @click="bg()" type="checkbox"  class="checkbox mt-[10px] checkbox-secondary" />
+                    <input @click="bg()" type="checkbox" class="checkbox mt-[10px] checkbox-secondary" />
                 </label>
                 <h2 class="text-[30px] text-white mb-[30px]">Transforms:</h2>
                 <div class="controls flex  flex-wrap gap-[20px]">
@@ -89,24 +80,40 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue';
 import ModelViewer from '../components/ModelViewer.vue'
+import { useModels } from '@/stores/models';
+
+
+const store = useModels()
+let item = {}
+for (let i of store.models) {
+    if (i._id == +window.location.pathname.split('/')[2]) {
+        item = i
+    }
+}
+
+
 
 let bgAR = false
 let hotpoins = false
-function exp (){
+function exp() {
     document.querySelector("#transform").setAttribute('exposure', event.target.value)
-    
+
 }
-function hot (){
+function hot() {
     hotpoins = !hotpoins
-    if(hotpoins)  for(let i of document.querySelectorAll('.HotspotAnnotation')) i.classList.add("opac")
-    else for(let i of document.querySelectorAll('.HotspotAnnotation'))  i.classList.remove("opac")
+    if (hotpoins) for (let i of document.querySelectorAll('.HotspotAnnotation')) i.classList.add("opac")
+    else for (let i of document.querySelectorAll('.HotspotAnnotation')) i.classList.remove("opac")
 }
-function bg(){
+function bg() {
     bgAR = !bgAR
-    if(bgAR) document.querySelector('#transform').setAttribute('skybox-image', 'https://modelviewer.dev/shared-assets/environments/spruit_sunrise_1k_HDR.jpg')
+    if (bgAR) document.querySelector('#transform').setAttribute('skybox-image', 'https://modelviewer.dev/shared-assets/environments/spruit_sunrise_1k_HDR.jpg')
     else document.querySelector('#transform').removeAttribute('skybox-image', 'https://modelviewer.dev/shared-assets/environments/spruit_sunrise_1k_HDR.jpg')
 }
 onMounted(() => {
+
+
+
+
     const modelViewerTransform = document.querySelector("model-viewer#transform");
     const roll = document.querySelector('#roll');
     const pitch = document.querySelector('#pitch');
@@ -156,7 +163,8 @@ onMounted(() => {
     box-shadow: 0 0 10px rgb(255, 0, 234), inset 0 0 10px rgb(255, 0, 234);
     border: 1px solid rgb(255, 0, 234);
 }
-.ter{
+
+.ter {
     border-bottom: 2px solid rgb(255, 0, 234);
 }
 
@@ -164,11 +172,11 @@ onMounted(() => {
     display: none;
 }
 
-.ls{
+.ls {
     color: rgb(255, 0, 234);
     font-size: 25px;
     margin-left: 20px;
-    text-shadow:  0 0 10px rgb(255, 0, 234);
+    text-shadow: 0 0 10px rgb(255, 0, 234);
 }
 
 .HotspotAnnotation {
@@ -186,7 +194,8 @@ onMounted(() => {
     color: rgb(255, 0, 234);
     box-shadow: 0 0 10px rgb(255, 0, 234), inset 0 0 10px rgb(255, 0, 234);
 }
-.opac{
+
+.opac {
     opacity: 1;
 }
 </style>
