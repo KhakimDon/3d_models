@@ -1,6 +1,6 @@
 <template>
     <div class="mx-auto pt-[50px]">
-        <div class="max-w-[1200px] flex mx-auto"><button class="h-[40px] borderall w-[120px] mb-[20px]"
+        <div class="m max-w-[1200px] flex mx-auto"><button class="h-[40px] borderall w-[120px] mb-[20px]"
                 @click="this.$router.push('/')"> НАЗАД</button>
             <h1 class="ls">{{ item.title }}</h1>
         </div>
@@ -11,13 +11,12 @@
                 <model-viewer id="transform" orientation="20deg 0 0" :src="item.url" ar class="h-[100%] w-[100%]"
                     exposure="1" ar-modes="webxr scene-viewer quick-look" camera-controls tone-mapping="commerce"
                     shadow-intensity="1" camera-orbit="-137.5deg 94.59deg 1.631m" field-of-view="22.98deg">
-                    <button v-for="(i,index) of item.hotspots" :key="item.id" class="Hotspot" :slot="`hotspot-${index+1}`"
-                        :data-position="i.position"
-                        :data-normal="i.normal"
+                    <button v-for="(i, index) of item.hotspots" :key="item.id" class="Hotspot"
+                        :slot="`hotspot-${index + 1}`" :data-position="i.position" :data-normal="i.normal"
                         data-visibility-attribute="visible">
-                        <div class="HotspotAnnotation">{{ i.annotation  }}</div>
+                        <div class="HotspotAnnotation">{{ i.annotation }}</div>
                     </button>
-                    
+
                     <div class="progress-bar hide" slot="progress-bar">
                         <div class="update-bar"></div>
                     </div>
@@ -31,7 +30,7 @@
                 </model-viewer>
 
             </div>
-            <div class="h-[100%] w-[50%] p-[20px] borderall mt-[20px]">
+            <div class="h-[100%] m414 w-[50%] p-[20px] borderall mt-[20px]">
                 <label class="cursor-pointer label gap-[20px] flex items-start justify-start">
                     <h2 class="text-[30px] text-white mb-[30px]">Exposures:</h2>
                     <input @input="exp()" type="range" value="1" max="2" class="range-secondary boxhrang range ">
@@ -197,5 +196,15 @@ onMounted(() => {
 
 .opac {
     opacity: 1;
+}
+
+
+@media screen and (max-width: 414px) {
+    .m414 {
+        width: 90%;
+    }
+    .m{
+        margin-left: 20px;
+    }
 }
 </style>
