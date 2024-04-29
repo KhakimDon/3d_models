@@ -39,7 +39,7 @@ export const useModels = defineStore('models', () => {
             title: "AWM 256",
             description: 'Такой себе AWM из cs 1.6',
             price: '',
-            url: '../../public/awm.glb',
+            url: '../../public/w.glb',
             image: '../../public/awm.png',
             hotspots: [
                 {

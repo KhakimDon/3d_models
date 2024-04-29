@@ -1,10 +1,8 @@
-<script setup lang="ts">
+<script>
 import { RouterLink, RouterView } from 'vue-router'
-import { useModels } from './stores/models';
 import './style.css'
+import('@google/model-viewer')
 
-const store = useModels()
-  
 
 </script>
 
